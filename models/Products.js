@@ -1,6 +1,6 @@
 let products = [
     {
-        id: 1,
+        id: "1",
         slug: "nike-shoe",
         name: "Nike Shoe"
     }
