@@ -1,28 +1,31 @@
 const express = require("express")
-const app = express()
+const app = require("liquid-express-views")(express())
+const fileUpload = require('express-fileupload')
 
-app.get('/', (req, res) => {
-    res.send("Home Page")
-})
+const productRouter = require("./routes/Products")
+const variantRouter = require("./routes/Variants")
+const imageRouter = require("./routes/Images")
 
-// curl -X GET -H "Page: 2" -H "Sort: 'price'" -H "Order: 'desc'" http://localhost:3000/products/all
-app.get('/products/all', (req, res) => {
-    const { page, sort, order } = req.headers
-    res.send(`GET Products: ${page}, ${sort}, ${order}`)
-})
+app.use(express.urlencoded({ extended: false }))
+app.use(fileUpload())
 
-// curl -X GET http://localhost:3000/products/8719
-app.get('/products/:productId', (req, res) => {
-    const { productId } = req.params
-    res.send(`GET Products: ${productId}`)
-})
 
-// curl -X GET http://localhost:3000/products/8719-small-red
-app.get('/products/:productId-:productSize-:productColor', (req, res) => {
-    const {productId, productSize, productColor} = req.params
-    res.send(`GET Products: ${productId}, ${productSize}, ${productColor}`)
-})
+app.use("/public", express.static('public'))
+
+app.use("/products", productRouter)
+app.use("/variants", variantRouter)
+app.use("/images", imageRouter)
 
 app.listen(3000, () => {
     console.log('Server listening on port 3000')
 })
+//Week 1
+// index =http://localhost:3000/products 
+
+// show  = http://localhost:3000/products/1
+
+//Update = curl -X POST --data "id=2&slug=nike-test&name=Nike Test" http://localhost:3000/products
+
+//create = curl -X POST --data "id=1&slug=nike-shoe&name=Nike shoe Updated" http://localhost:3000/products/1
+
+//delete = curl -X DELETE http://localhost:3000/products/1
